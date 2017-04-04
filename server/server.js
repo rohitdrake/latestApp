@@ -40,7 +40,7 @@ app.get('/todos/:id', (req, res)=>{
     res.status(404).send('ID passed is not valid');
     return console.log('Id passed is not valid');
   }
-  User.findById(id).then((todo)=>{
+  Todo.findById(id).then((todo)=>{
     if(!todo){
     res.status(400).send('todo not found in our database')
     return console.log('todo not found in our database');
