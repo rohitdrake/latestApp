@@ -61,10 +61,12 @@ app.delete('/todos/:id', (req, res)=>{
     res.status(404).send('ID passed is not valid');
     return console.log('Id passed is not valid');
   }
-  Todo.findByIdAndRemove(id).then((res)=>{
-    if(!res)
-    res.status(400).send("Not item with given id exist");
-    res.status(200).send(res);
+  Todo.findByIdAndRemove(id).then((todo)=>{
+    if(!todo){
+    res.status(400).send('todo not found in our database')
+    return console.log('todo not found in our database');
+    }
+    res.send(todo);
   }).catch((e)=>{
     res.status(400).send();
   });
