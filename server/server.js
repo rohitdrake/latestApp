@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const {ObjectID} = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -67,6 +68,34 @@ app.delete('/todos/:id', (req, res)=>{
     return console.log('todo not found in our database');
     }
     res.send(todo);
+  }).catch((e)=>{
+    res.status(400).send();
+  });
+});
+
+app.patch('/todos/:id', (req, res)=>{
+  let id = req.params.id;
+  let body = _.pick(req.body, ["text", "completed"]);
+
+  if(_.isBoolean(body.completed)&&body.completed){
+    body.completedAt = new Date().getTime();
+  } else {
+    body.completed = false;
+    body.completedAt = null;
+  }
+
+  if(!ObjectID.isValid(id)){
+    res.status(404).send('ID passed is not valid');
+    return console.log('Id passed is not valid');
+  }
+
+  Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo)=>{
+    if(!todo){
+    res.status(400).send('todo not found in our database')
+    return console.log('todo not found in our database');
+    }
+    res.send(todo);
+
   }).catch((e)=>{
     res.status(400).send();
   });
